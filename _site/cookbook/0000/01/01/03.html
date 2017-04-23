@@ -1,0 +1,794 @@
+<h1 id="만들어볼-채팅-프로그램의-디자인">만들어볼 채팅 프로그램의 디자인</h1>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"en"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> <span class="na">content=</span><span class="s">"width=device-width, initial-scale=1"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>VUE-CHAT<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="o">*</span> <span class="p">{</span>
+            <span class="nl">-webkit-box-sizing</span><span class="p">:</span> <span class="n">border-box</span><span class="p">;</span>
+            <span class="nl">-moz-box-sizing</span><span class="p">:</span> <span class="n">border-box</span><span class="p">;</span>
+            <span class="nl">box-sizing</span><span class="p">:</span> <span class="n">border-box</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nt">body</span> <span class="p">{</span>
+            <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+            <span class="nl">padding</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="no">gainsboro</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_root</span> <span class="p">{</span>
+            <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span>
+            <span class="nl">top</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+            <span class="nl">left</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn</span> <span class="p">{</span>
+            <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">150px</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">40px</span><span class="p">;</span>
+            <span class="nl">font-size</span><span class="p">:</span> <span class="m">17px</span><span class="p">;</span>
+            <span class="nl">line-height</span><span class="p">:</span> <span class="m">40px</span><span class="p">;</span>
+            <span class="nl">margin-top</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="m">#000</span><span class="p">;</span>
+            <span class="nl">color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+            <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="nb">pointer</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="n">hand</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn._right</span> <span class="p">{</span>
+            <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn._wide</span> <span class="p">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">310px</span> <span class="cp">!important</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn_2</span> <span class="p">{</span>
+            <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+            <span class="nl">font-size</span><span class="p">:</span> <span class="m">17px</span><span class="p">;</span>
+            <span class="nl">line-height</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+            <span class="nl">margin-top</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+            <span class="nl">color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+            <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="nb">pointer</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="n">hand</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn_2._right</span> <span class="p">{</span>
+            <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nc">._btn_write</span> <span class="p">{</span>
+            <span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+            <span class="nl">float</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+            <span class="nl">font-size</span><span class="p">:</span> <span class="m">17px</span><span class="p">;</span>
+            <span class="nl">line-height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="m">#eee</span><span class="p">;</span>
+            <span class="nl">color</span><span class="p">:</span> <span class="m">#000</span><span class="p">;</span>
+            <span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="nb">pointer</span><span class="p">;</span>
+            <span class="nl">cursor</span><span class="p">:</span> <span class="n">hand</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_login_form</span> <span class="p">{</span>
+            <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">310px</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">200px</span><span class="p">;</span>
+            <span class="nl">top</span><span class="p">:</span> <span class="n">calc</span><span class="p">(</span><span class="m">50%</span> <span class="n">-</span> <span class="m">100px</span><span class="p">);</span>
+            <span class="nl">left</span><span class="p">:</span> <span class="n">calc</span><span class="p">(</span><span class="m">50%</span> <span class="n">-</span> <span class="m">155px</span><span class="p">);</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_login_form</span> <span class="nt">input</span> <span class="p">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">310px</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">40px</span><span class="p">;</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="m">#000</span><span class="p">;</span>
+            <span class="nl">font-size</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+            <span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+            <span class="nl">margin-top</span><span class="p">:</span> <span class="m">10px</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_top</span> <span class="p">{</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">60px</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="n">dimgrey</span><span class="p">;</span>
+            <span class="nl">padding</span><span class="p">:</span> <span class="m">0px</span> <span class="m">15px</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_chat</span> <span class="p">{</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="n">calc</span><span class="p">(</span><span class="m">100%</span> <span class="n">-</span> <span class="m">200px</span><span class="p">);</span>
+            <span class="nl">overflow-y</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_file</span> <span class="p">{</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">40px</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="n">dimgrey</span><span class="p">;</span>
+            <span class="nl">padding</span><span class="p">:</span> <span class="m">0px</span> <span class="m">15px</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_bottom</span> <span class="p">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_bottom</span> <span class="nt">textarea</span> <span class="p">{</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="n">calc</span><span class="p">(</span><span class="m">100%</span> <span class="n">-</span> <span class="m">100px</span><span class="p">);</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+            <span class="nl">border</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+            <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">middle</span><span class="p">;</span>
+            <span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+            <span class="nl">font-size</span><span class="p">:</span> <span class="m">15px</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_user_list</span> <span class="p">{</span>
+            <span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span>
+            <span class="nl">top</span><span class="p">:</span> <span class="m">60px</span><span class="p">;</span>
+            <span class="nl">left</span><span class="p">:</span> <span class="m">-1000px</span><span class="p">;</span>
+            <span class="nl">width</span><span class="p">:</span> <span class="m">500px</span><span class="p">;</span>
+            <span class="nl">max-width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="n">calc</span><span class="p">(</span><span class="m">100%</span> <span class="n">-</span> <span class="m">200px</span><span class="p">);</span>
+            <span class="nl">background-color</span><span class="p">:</span> <span class="m">#fff</span><span class="p">;</span>
+            <span class="nl">z-index</span><span class="p">:</span> <span class="m">100</span><span class="p">;</span>
+            <span class="nl">transition</span><span class="p">:</span> <span class="n">all</span> <span class="m">0.5s</span> <span class="n">ease-out</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_login_before</span> <span class="p">{</span>
+            <span class="c">/*            display: none;*/</span>
+        <span class="p">}</span>
+        
+        <span class="nf">#_login_after</span> <span class="p">{</span>
+            <span class="c">/*            display: none;*/</span>
+        <span class="p">}</span>
+    <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_root"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"_login_before"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_login_form"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">placeholder=</span><span class="s">"email"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">placeholder=</span><span class="s">"pw"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn"</span><span class="nt">&gt;</span>Login<span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn _right"</span><span class="nt">&gt;</span>Join<span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn _wide"</span><span class="nt">&gt;</span>Google Login<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/span&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"_login_after"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_top"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn"</span><span class="nt">&gt;</span>User List<span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn _right"</span><span class="nt">&gt;</span>Logout<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_chat"</span><span class="nt">&gt;&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_file"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn_2"</span><span class="nt">&gt;</span>multiline : ctrl + enter<span class="nt">&lt;/div&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn_2 _right"</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">"fa fa-files-o"</span><span class="nt">&gt;&lt;/i&gt;</span> Upload Files<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_bottom"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;textarea&gt;&lt;/textarea&gt;</span>
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"_btn_write"</span><span class="nt">&gt;</span>Write<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"_user_list"</span><span class="nt">&gt;&lt;/div&gt;</span>
+        <span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+</div>
+
+<p>일단 구현 하려고 하는 채팅앱의  UI 입니다.</p>
+
+<p>코드를 보시면 아시겠지만 html 과 css를 이용하여 작성 되었습니다. (아무래도 UI 라서 css 부분이 많은 비중을 차지하네요.)</p>
+
+<p>html 구성 자체는 간단합니다. 우선 <code class="highlighter-rouge">&lt;body&gt;</code> 밑에 <code class="highlighter-rouge">&lt;div id="_root"&gt;</code> 블럭이 전체 페이지를 지탱하고 있습니다.</p>
+
+<p><code class="highlighter-rouge">&lt;div id="_root"&gt;</code> 블럭 밑에 <code class="highlighter-rouge">&lt;span id="_login_before"&gt;</code> 블럭 과  <code class="highlighter-rouge">&lt;span id="_login_after"&gt;</code> 블럭 이 보이시나요?</p>
+
+<p>이렇게 일단은 로그인 전후가 혼재 되어 있습니다.</p>
+
+<p>css 의 <code class="highlighter-rouge">#_login_before { /*  display: none; */ }</code>  <code class="highlighter-rouge">#_login_after { /*  display: none; */ }</code> 부분의 주석을 번갈라 제거해 보세요.</p>
+
+<p>각각 로그인 전후의 UI를 확인해 볼 수 있습니다.</p>
+
+<h1 id="vue-instance-로-div-id_root-블럭-에-mount-하기">Vue instance 로 <code class="highlighter-rouge">&lt;div id="_root"&gt;</code> 블럭 에 mount 하기</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;body&gt;
+    &lt;div id="_root"&gt;
+    ... 중략 ...
+    &lt;/div&gt;
+    &lt;script src="https://unpkg.com/vue@2.2.6"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                uid: ""
+            },
+            created() {
+            },
+            methods: {
+            }
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+</div>
+<p><code class="highlighter-rouge">&lt;body&gt;</code> 블럭 맨 밑에 vue code를 추가 하여 vue instance 를 만듭니다.</p>
+
+<p>또 나중에 디버깅의 편리를 위해 vue 라는 변수를 만들어 정의된 instance 를 레퍼런스 하겠습니다.</p>
+
+<p>앞으로 계속 진행되는 코드를 보면 아시겠지만 우리는 여기서 몇몇 아주 기본적인 vue.js 기능만 이용할 계획입니다.</p>
+
+<p>그리 많지 않으니까 여기서 한번 나열해 보고 지나가죠…</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">v-if</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">v-model</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">v-for</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">@click</code> ( @은 v-on: 의 shorthand )</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">@keypress.enter</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">@keypress.enter.prevent</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">@keypress.ctrl.enter.prevent</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">:class</code> ( :은 v-bind: 의 shorthand )</p>
+  </li>
+</ul>
+
+<p>정도 입니다. 위 요소들이 낮설다고 하셔도 크게 문제될건 없습니다. 그냥 vue.js 에서는 이렇게 하는구나… 하고 넘어가면 됩니다.</p>
+
+<h1 id="v-if-를-통한-로그인-전후-상황을-렌더링rendering-해보자"><code class="highlighter-rouge">v-if</code> 를 통한 로그인 전후 상황을 렌더링(rendering) 해보자</h1>
+
+<p>눈치채셨는지 모르겠지만 data 에 uid 라는 변수를 넣어 놨습니다.</p>
+
+<p>이 uid 변수값은 firebase 의 <strong>로그인 상태 관찰자 코드</strong>를 통해 사용자가 로그인 하거나 로그아웃 할때 채워지가나 비워질 예정입니다.</p>
+
+<p>로그인 하면 로그인된 user 의 uid 값으로 채워질 것이고, 로그아웃 하면 담고있던 값을 비울것입니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;div id="_root"&gt;
+        &lt;span id="_login_before"&gt;
+        ... 중략 ...
+        &lt;/span&gt;
+        &lt;span id="_login_after"&gt;
+        ... 중략 ...
+        &lt;/span&gt;
+    &lt;/div&gt;
+</code></pre>
+</div>
+<p>자 우선 윗 부분을</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;div id="_root"&gt;
+        &lt;template v-if="!uid"&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+        &lt;template v-if="uid"&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+    &lt;/div&gt;
+</code></pre>
+</div>
+
+<p>이렇게 변경해 보겠습니다.</p>
+
+<p><code class="highlighter-rouge">v-if</code> 는  quotation(“ 이든 ‘ 이든 상관 없습니다.) 안의 값이 (ture , false) 상황에 따라 렌더링 됩니다. 정확히 말해 true 일때만 렌더링 되고 false 일때는 렌더링 되지 않습니다.</p>
+
+<p>여기서 한가지, <code class="highlighter-rouge">v-if</code> 는 자신을 포함하고 tag 블럭 까지 렌더링 합니다.</p>
+
+<p>따라서 굳이 해당 블럭 요소(여기선 <code class="highlighter-rouge">span</code> tag) 까지 렌더링 되어질 필요가 없다면 <code class="highlighter-rouge">template</code> tag 를 써서  <code class="highlighter-rouge">template</code> tag 블럭 안쪽만 렌더링 시킬 수 있습니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>        var vue = new Vue({
+            el: "#_root",
+            data: {
+                uid: "" // 값을 채웠다 비웠다 해보세요....
+            },
+            ... 중략 ...
+        })
+</code></pre>
+</div>
+
+<p>uid 값을 채웠다 비웠다 하며 브라우져를 리로딩 해보세요.</p>
+
+<p>자 이제 본격적으로 코드를 입혀 나가겠습니다. 먼져 로그인 부분 부터 살펴보죠.</p>
+
+<h1 id="authentication-로그인-처리-준비작업">Authentication (로그인 처리) 준비작업</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;div id="_root"&gt;
+        &lt;template v-if="!uid"&gt;
+            &lt;div id="_login_form"&gt;
+                &lt;input type="text" placeholder="email" v-model="email"&gt;
+                &lt;input type="password" placeholder="pw" @keypress.enter="_login" v-model="pw"&gt;
+                &lt;div class="_btn" @click="_login"&gt;Login&lt;/div&gt;
+                &lt;div class="_btn _right" @click="_join"&gt;Join&lt;/div&gt;
+                &lt;div class="_btn _wide" @click="_google_login"&gt;Google Login&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+        &lt;template v-if="uid"&gt;
+            &lt;div id="_top"&gt;
+                &lt;div class="_btn"&gt;User List&lt;/div&gt;
+                &lt;div class="_btn _right" @click="_logout"&gt;Logout&lt;/div&gt;
+            &lt;/div&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+    &lt;/div&gt;
+</code></pre>
+</div>
+
+<p>먼저 로그인 폼의 각요소에 이벤처리를 해보죠 @ directive ( @은 v-on: 의 shorthand ) 를 이용하여 DOM 의 이벤트를 리스닝 하고, vue methods 에 해당 function 을 등록하여 구현 할수있습니다.</p>
+
+<p><code class="highlighter-rouge">@click</code> 은 그렇다치고… <code class="highlighter-rouge">@keypress.enter</code> 참 깔끔해 보입니다.</p>
+
+<p>keyboard 이벤트의 리스닝시 <strong>key modifiers</strong> 를 더할수 있습니다.</p>
+
+<p>쉽게 말하자면 이벤트값에 keyCode 를 덧붙여 해당 keyCode 값의 keyboard 이벤트 발생시로 이벤트를 헨들링 제한 하겠단 의미 입니다.</p>
+
+<p>또한 <strong>key modifiers</strong> 에는 몇몇 <strong>key modifier aliases</strong> 가 존재하고 <code class="highlighter-rouge">.enter</code> 는 바로 이 <strong>key modifier aliases</strong> 중 하나입니다. <strong>enter 는 keyCode 13 의 alias (별명)</strong> 이 되는거죠.</p>
+
+<p>따라서 <code class="highlighter-rouge">@keypress.enter</code> 와 <code class="highlighter-rouge">@keypress.13</code> 은 같은 의미 입니다. 모든 keyCode 값을 외울수 없으니까 많이 쓰는 것은 alias 만들어 놨단 이야기 네요… vue.js의 세심함이 느껴집니다.</p>
+
+<p><code class="highlighter-rouge">input</code> element 에 각각 <code class="highlighter-rouge">v-mode="email"</code> <code class="highlighter-rouge">v-mode="pw"</code> 을 더했습니다. 이렇게 한후 vue data 에 같은 변수를 추가하면 흔히말하는 two way binding 을 할 수 있습니다.</p>
+
+<p>자 이제 vue instance 를 꾸며 보죠.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;body&gt;
+    &lt;div id="_root"&gt;
+        &lt;template v-if="!uid"&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+        &lt;template v-if="uid"&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+    &lt;/div&gt;
+
+    &lt;script src="https://unpkg.com/vue@2.2.6"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                uid: "",
+                email: "",
+                pw: ""
+            },
+            created() {
+            },
+            methods: {
+                _login() {
+                    if(!this.email || !this.pw) return;
+                    this.uid = "adjflasdjlfjlasd"; // 테스트를 위한 더미(dummy) data 를 넣어준다.
+                },
+                _join() {
+                    if(!this.email || !this.pw) return;
+                    this.uid = "adjflasdjlfjlasd"; // 테스트를 위한 더미(dummy) data 를 넣어준다.
+                },
+                _google_login() {
+                    this.uid = "adjflasdjlfjlasd"; // 테스트를 위한 더미(dummy) data 를 넣어준다.
+                },
+                _logout() {
+                    this.uid = "";
+                }
+            }
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+</div>
+
+<p>코드를 좀 보자면 data 부분에 email 과 pw 를 추가했고 methods 부분에 각각의 @ directive 를 통해 호출 하게될 function 을 등록하여 간략하게 구현해 보았습니다.</p>
+
+<p>vue instance 안에서 data 변수에 접근할때는 this 키워드를 이용합니다. this.uid 처럼 말이죠…</p>
+
+<p>email 과 pw 에 값을 넣고 로그인(조인, 구글로그인 포함)과 로그아웃을 해보면 예상 대로 잘 작동 될 것입니다.</p>
+
+<p>자 이제 슬슬 firebase 가 등장할 차례 입니다.</p>
+
+<h1 id="firebase-로-authentication-로그인-처리-완성해-보자">firebase 로 Authentication (로그인 처리) 완성해 보자</h1>
+
+<p>firebase 설명에 앞서 선행되어 있어야 할 부분이 필요 합니다.</p>
+
+<ul>
+  <li>
+    <p>firebase 계정이 없다면 가입하여 계정 생성</p>
+  </li>
+  <li>
+    <p>프로젝트 생성을 통해 새 프로젝트를 하나 만든다. (프로젝트명은 아무 이름이나 상관 없음)</p>
+  </li>
+  <li>
+    <p>프로젝트의 제공 메뉴중 Authentication 선택후 &gt; 로그인 방법 &gt; 로그인 제공업체 의 <strong>이메일/비밀번호</strong>, <strong>Google</strong> 의 상태를 중지됨에서 사용으로 바꾼다.</p>
+  </li>
+  <li>
+    <p>또한 로그인 제공업체 바로 밑에 <strong>도메인 추가 버튼</strong>을 클릭 로그인을 이용할 도메인을 추가한다. 여기엔 ip 도 추가 가능 따라서 (127.0.0.1) 도 추가 가능 하다.</p>
+  </li>
+  <li>
+    <p>도메인 추가에 output.jsbin.com 와 jsbin.com 을 추가하면 jsbin 에서도 firebase 로 Authentication 을 테스트 해볼 수 도 있다. (lol~)</p>
+  </li>
+</ul>
+
+<p>윗 부분이 선행되어 있다는 가정하에 계속 진행해 보겠습니다.</p>
+
+<p>일단 firebase 설정코드를 클립보드에 복사후 진행중인 코드에 붙여넣기 합니다. (해당 프로젝트 dashboard 의 Overview 를 클릭하면 <strong>웹 앱에 Firebase 추가</strong> 버튼이 보입니다. )</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;body&gt;
+    &lt;div id="_root"&gt;
+    ... 중략 ...
+    &lt;/div&gt;
+    
+    &lt;script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDAw0l997xa4F6xMyyqnTqHDsg1GUp0M3w",
+        authDomain: "vue-chat-test.firebaseapp.com",
+        databaseURL: "https://vue-chat-test.firebaseio.com",
+        projectId: "vue-chat-test",
+        storageBucket: "vue-chat-test.appspot.com",
+        messagingSenderId: "274923345748"
+      };
+      firebase.initializeApp(config);
+    &lt;/script&gt;
+    
+    &lt;script src="https://unpkg.com/vue@2.2.6"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var vue = new Vue({
+        ... 중략 ...
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+</div>
+
+<p>위의 UI 에서도 살펴봤지만, 우리는 여기서 <strong>이메일/비밀번호</strong>, <strong>Google</strong> 이렇게 두가지의 로그인 방법을 구현할 예정입니다.</p>
+
+<p>아주 간략하게 진행될 프로세스를 설명하자면</p>
+
+<ul>
+  <li>
+    <p>firebase는 각 로그인에 대한 인터페이스를 제공합니다.</p>
+  </li>
+  <li>
+    <p>우리는 제공받은 인터페이스에 필요한 값(아이디, 패스워드) 만 넘겨주면 됩니다.</p>
+  </li>
+  <li>
+    <p>로그인 상황에서 발생할수있는 각종 오류및 벨리데이션 등의 작업은 firebase 가 알아서 처리합니다, 이후 우리에겐 처리된 결과만 돌려(callback) 줍니다.</p>
+  </li>
+  <li>
+    <p>firebase 는 여기에 더하여 <strong>로그인 상태 관찰자 코드</strong> 라는 것을 제공 합니다.</p>
+  </li>
+</ul>
+
+<p>따라서 일단 로그인 프로세스에 있어서 우리의 업무는 딱 2가지로 압축될 수 있습니다.</p>
+
+<ul>
+  <li>
+    <p>제공받은 인터페이스에 값을 넘겨주고, callback으로 받은 오류가 있다면 alert을 이용 사용자에게 notice 한다.</p>
+  </li>
+  <li>
+    <p><strong>로그인 상태 관찰자 코드</strong> 를 통한 사용자 로그인 상태를 전달받고 거기에 따른 로직 작성한다.</p>
+  </li>
+</ul>
+
+<p>아마 코드로 보시면 더 간단할 것 입니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;script&gt;
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                uid: "",
+                email: "",
+                pw: ""
+            },
+            created() {
+                var z = this;
+                // 로그인 상태 관찰자 코드
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        z.uid = user.uid;
+                    } else {
+                        z.uid = "";
+                    }
+                });
+            },
+            methods: {
+                _login() {
+                    if(!this.email || !this.pw) return;
+                    // 로그인 인터페이스
+                    firebase.auth().signInWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _join() {
+                    if(!this.email || !this.pw) return;
+                    // 신규가입(createUserWithEmailAndPassword) 인터페이스, 신규가입후 로그인까지 처리 해줌
+                    firebase.auth().createUserWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _google_login() {
+                    // 구글 로그인 인터페이스
+                    var provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _logout() {
+                    // 로그아웃
+                    firebase.auth().signOut();
+                }
+            }
+        })
+    &lt;/script&gt;
+</code></pre>
+</div>
+
+<p>주석이 달린 부분 아래 코드를 추가 하였습니다.</p>
+
+<p>login 과 join 의 인터페이스 모두 정말 간략하고 직관적입니다. 심지어 구글 로그인은 그냥 정보를 넘길필요도 없습니다. (어짜피 팝업으로된 구글 UI 화면이 값을 받아 처리 할 것 입니다.)</p>
+
+<p><code class="highlighter-rouge">this.email</code> , <code class="highlighter-rouge">this.pw</code> 와 같이 우리는 정보를 인터페이스에 넘겼 습니다. 만약 오류가 발생했다면, 각각의 인터페이스는 오류를 catch 하여 우리에게 callback 해줄 겁니다.</p>
+
+<p>error 메세지는 자세한 error 내용을 파악할 수 있도록 보다 디테일한 정보를 제공하고 있지만, 여기서는 간단하게 만 넘어 가겠습니다.</p>
+
+<p>로그인에 성공 하게 되면 created 부분 에 등록해 놓은 로그인 상태 관찰자 코드가 작동합니다.</p>
+
+<p>우선 created 부분은 vue instance 의 lifecycle hooks 중 하나입니다. (좀더 디테일한 lifecycle hooks 은 vue.js 도큐먼트를 참고해 보세요.)</p>
+
+<p>created hook 은 보통 외부데이터 바인딩이나, 각종 셋팅의 영역으로 이용하기 적절하고 firebase 의 <strong>로그인 상태 관찰자 코드</strong> 를 등록하기에도 적절한 부분입니다.</p>
+
+<p>코드 안에 <code class="highlighter-rouge">var z = this;</code> 라고 되어 있는 부분이 보입니다.</p>
+
+<p>callback 안에서는 this keyword가 vue instance 가 아닌 다른 값을 지칭하게 되기 때문에 <code class="highlighter-rouge">var z = this;</code> 처럼 먼져 치환후, <code class="highlighter-rouge">z.uid = user.uid;</code> 와 같이 이용할 것 입니다.</p>
+
+<p>(vue.js 신규 이용자들이 흔하게 범하는 실수중 하나입니다. 꼭 기억해 주세요!!)</p>
+
+<p>마지막으로 로그아웃도 <code class="highlighter-rouge">firebase.auth().signOut();</code> 이렇게, 심플하게 작성 할수 있습니다.</p>
+
+<p>여기까지가 기본적인 firebase 로그인 프로세스 였습니다. 이제 조금 더 깊이 들어가 보겠습니다.</p>
+
+<h1 id="user-list-를-만들어-보자">user list 를 만들어 보자</h1>
+
+<p>일단 firebase Authentication (로그인 처리) 를 통해 로그인한 user 의 정보는 firebase 의 해당 프로젝트에서만 유효 합니다. 당연한 것이겠죠…</p>
+
+<p>또한 해당 프로젝트의 dashboard 를 통해서 user list 를 확인 하고 관리(변경,삭제등) 할 수 있습니다.</p>
+
+<p>하지만 아쉽게도 이 user list 를 우리가 만든 firebase 프로그램 안에서는 직접 받아 볼 수 없습니다.</p>
+
+<p>보안상의 이유 때문이라고 설명하고 있습니다. (참고로 초기 firebase 버젼 에서는 이정보를 받아 볼수 있었습니다.)</p>
+
+<p>그래서 firebase 측 에서는 user list 정보를 직접 사용자가 firebase database 에 저장하여 사용 하라고 안내하고 있습니다.</p>
+
+<p>그래서 우리도 조금은 귀찮은 일 이겠지만, user 정보를 직접 firebase database 에 저장하여 사용해 보도록 하겠습니다.</p>
+
+<h3 id="user-list-를-만들기-위한-프로세스">user list 를 만들기 위한 프로세스</h3>
+
+<ul>
+  <li>
+    <p>user list 를 다룰 user_ref 라는 firebase 의 database ref 를 생성합니다.</p>
+  </li>
+  <li>
+    <p>user 가 로그인 하게되면 user_ref 를 이용하여 우리가 firebase database 에 저장한 user list 가져와 임시 변수에 저장합니다.</p>
+  </li>
+  <li>
+    <p>로그인 된 user 가 가져온 user list 에 있다면, user_ref 를 이용해 로그인된 사용자의 접속 시간 정보만 업데이트 합니다.</p>
+  </li>
+  <li>
+    <p>로그인 된 user 가 가져온 user list 에 없다면, user_ref 를 이용해 신규 user 정보로 저장합니다.</p>
+  </li>
+  <li>
+    <p>user_ref 를 이용하여 데이터를 업데이트 하거나, 신규로 정보 저장시, 로그인 상태 관찰자 코드 를 통해 전달받은 user 정보의 uid 값을 child ref key 값으로 이용합니다.</p>
+  </li>
+  <li>
+    <p>user 정보의 uid 값은 프로젝트 안에서 유일한 값으로 셋팅 되므로, firebase database 에 user 데이터 등록시 key 값으로 이용 하기에 적절합니다.</p>
+  </li>
+  <li>
+    <p>firebase database 는 데이터 구조가 json 오브젝트 형태를 띠고 있습니다. 따라서 같은 레벨의 key 값은 중복 될수 없습니다.</p>
+  </li>
+  <li>
+    <p>보통 firebase 에서는 push() 로 유일한 key 값을 생성해주고, 이를 이용할 수 있도록 합니다. (이 key 값은 order 화 되어 있습니다.)</p>
+  </li>
+</ul>
+
+<p>코드를 좀더 확장해 보겠습니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;script&gt;
+        // user_ref 추가
+        var user_ref = firebase.database().ref("user");
+    
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                uid: "",
+                email: "",
+                pw: ""
+            },
+            created() {
+                var z = this;
+                // 로그인 상태 관찰자 코드
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        z.uid = user.uid;
+                        
+                        user_ref.once("value", function(snapshot) {
+                            var u = snapshot.val() != null ? snapshot.val() : {};
+                            if (u[user.uid]) {
+                                user_ref.child(user.uid).update({
+                                    date: moment().format("ll"),
+                                    time: moment().format("LTS")
+                                })
+                            } else {
+                                user_ref.child(user.uid).set({
+                                    email: user.email,
+                                    date: moment().format("ll"),
+                                    time: moment().format("LTS")
+                                })
+                            }
+                        })
+                        
+                    } else {
+                        z.uid = "";
+                    }
+                });
+            },
+            methods: {
+            ... 중략 ...
+            }
+        })
+    &lt;/script&gt;
+</code></pre>
+</div>
+
+<p>추가된 코드를 보면, 먼저 <code class="highlighter-rouge">var user_ref = firebase.database().ref("user");</code> user_ref 라는 firebase 의 database ref 를 하나 생성했습니다.</p>
+
+<p><code class="highlighter-rouge">user_ref.once("value", function(snapshot) {})</code> 를 이용하여 user list 가져 옵니다. 이렇게 once 와 value 를 이용하면 해당 database ref 에 저장된 전체 데이터를 스냅샵 형태로 한번 받을 수 있습니다.</p>
+
+<p>그리고 callback 에서 구현된 부분은, 위의 프로세스 에서 설명 하였듯이, 로그인 된 사용자 uid 로 조회하여, user 정보를 업데이트 하거나 저장 하는 코드입니다.</p>
+
+<p>이 코드는 user 들이 로그인 할때 마다 실행 될 것이고, 이로써 우리는 user 정보를 firebase 에 저장 할 수 있게 되었습니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;script&gt;
+        // user_ref 추가
+        var user_ref = firebase.database().ref("user");
+    
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                user: {},
+                uid: "",
+                email: "",
+                pw: "",
+                user_show: false
+            },
+            created() {
+                var z = this;
+                // 로그인 상태 관찰자 코드
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        z.uid = user.uid;
+                        
+                        user_ref.once("value", function(snapshot) {
+                        ... 중략 ...
+                        })
+                        
+                        // user list 에 신규 데이터가 있을때 마다 값을 받아 옵니다.
+                        user_ref.on("child_added", function(d) {
+                            Vue.set(z.user, d.key, d.val());
+                        })
+                        
+                        // user list 에 변화가 있을때 마다 값을 받아 옵니다.
+                        user_ref.on("child_changed", function(d) {
+                            Vue.set(z.user, d.key, d.val());
+                        })
+                        
+                        commentsRef.on('child_changed', function(data) {
+  setCommentValues(postElement, data.key, data.val().text, data.val().author);
+});
+                        
+                    } else {
+                        z.uid = "";
+                    }
+                });
+            },
+            methods: {
+            ... 중략 ...
+            }
+        })
+    &lt;/script&gt;
+</code></pre>
+</div>
+
+<p>자 이제 정보를 firebase database 에 저장 하였으니 가져와서, 우리의 vue data 에  저장 해야 겠습니다. 이를 위해 user list 정보를 담을 <code class="highlighter-rouge">user: {}</code> 변수를 vue data 추가 하였습니다.</p>
+
+<p><strong>로그인 상태 관찰자 코드</strong> 안에 user_ref 에대한 child_added 와 child_changed 이벤트 수신 대기 코드를 추가 하였습니다.</p>
+
+<p>각 이벤트 발생시 받아오는 데이터를 vue data 의 user 변수에 반영 합니다.</p>
+
+<p>여기서는 <code class="highlighter-rouge">Vue.set( target, key, value )</code> 문법을 사용 하였는데, 이것은 vue data 의 user 변수가 Object 타입이며, v-for 를 통해 화면 UI 에 바로 반영하기 위함 입니다.</p>
+
+<p>vue data 의 <code class="highlighter-rouge">user_show: false</code> 부분은 user list UI 의 화면 제어를 위해 사용 될겁니다.</p>
+
+<p>다음 코드는, 이렇게 저장된  vue data 의 user 정보를 화면 UI 에 뿌려주는 부분을 작성 한 부분입니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;body&gt;
+    &lt;div id="_root"&gt;
+        &lt;template v-if="!uid"&gt;
+        ... 중략 ...
+        &lt;/template&gt;
+        &lt;template v-if="uid"&gt;
+            &lt;div id="_top"&gt;
+                &lt;!-- @ directive 를 추가하여 &lt;div id="_user_list"&gt; tag 를 제어 하겠습니다. --&gt;
+                &lt;div class="_btn" @click="user_show = !user_show"&gt;User List&lt;/div&gt;
+                &lt;div class="_btn _right" @click="_logout"&gt;Logout&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div id="_chat"&gt;&lt;/div&gt;
+            &lt;div id="_file"&gt;
+                &lt;div class="_btn_2"&gt;multiline : ctrl + enter&lt;/div&gt;
+                &lt;div class="_btn_2 _right"&gt;&lt;i class="fa fa-files-o"&gt;&lt;/i&gt; Upload Files&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div id="_bottom"&gt;
+                &lt;textarea&gt;&lt;/textarea&gt;
+                &lt;div class="_btn_write"&gt;Write&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div id="_user_list" :class="{_show: user_show}"&gt;
+                &lt;!-- 바로 이부분에 뿌려 줍니다 --&gt;
+                &lt;div v-for="(v, k) in user"&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt; &lt;&lt;/span&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+    ... 중략 ...
+&lt;/body&gt;
+</code></pre>
+</div>
+
+<p>우선 <code class="highlighter-rouge">&lt;div v-for="(v, k) in user"&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt; &lt;&lt;/span&gt;&lt;/div&gt;</code> 에서 처럼 v-for 를 이용하여 DOM 을 iteration(반복) 합니다.</p>
+
+<p><code class="highlighter-rouge">v-for="(v, k) in user"</code> Array type 의 v-for 와 다르게 Object type 은 key 값과 value 값을 구분해서 받아 볼수 있습니다.</p>
+
+<p>반복될 블럭 안에 디스플레이할 user의 email 과 로그인 시간 정보를 <code class="highlighter-rouge">&lt;span&gt;</code> tag 에 담습니다.</p>
+
+<p>또한 <code class="highlighter-rouge">&lt;div class="_btn" @click="user_show = !user_show"&gt;</code> 에서 보면 click 이벤트를 통해 boolean type 인 vue data 의 user_show 값을 토글(toggle) 하고,</p>
+
+<p>이렇게 변경된 값이 <code class="highlighter-rouge">&lt;div id="_user_list" :class="{_show: user_show}"&gt;</code> 부분에서 볼수 있드시  vue 의 class 바인딩 을 통해 vue data 의 user_show 값에 기초하여 토글(toggle) 되게 됩니다.</p>
+
+<p>자 이제 디자인을 위해 필요한 css 부분을 추가해 보겠습니다.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    &lt;style&gt;
+        ... 중략 ...
+        
+        #_user_list div {
+            padding-top: 15px;
+        }
+        
+        #_user_list div span {
+            margin-left: 7px;
+            font-size: 9px;
+        }
+        
+        #_user_list._show {
+            left: 0;
+        }
+    &lt;/span&gt;
+</code></pre>
+</div>
+
+<p>css <code class="highlighter-rouge">#_user_list</code> style 에는 <code class="highlighter-rouge">transition: all 0.5s ease-out;</code> 속성이 있으므로 <code class="highlighter-rouge">_show</code> class 의 toggle(토글) 에 따라 좌우로 슬라이드 되는 효과를 볼 수 있습니다.</p>
+
+<p>이렇게 해서, user list 를 마무리 했습니다. 이제 user 도 로그인 했으니, 본격적으로 체팅을 구현해 보겠습니다.</p>
+

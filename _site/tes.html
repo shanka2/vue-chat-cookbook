@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VUE-CHAT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+    ._btn { display: inline-block; width: 150px; height: 40px; font-size: 17px; line-height: 40px; margin-top: 10px; background-color: #000; color: #fff; text-align: center; cursor: pointer; cursor: hand; }
+    ._btn._right {float: right;}
+    ._btn._wide {width: 310px !important;}
+    ._btn_2 { display: inline-block; width: auto; height: 20px; font-size: 17px; line-height: 20px; margin-top: 10px; color: #fff; text-align: center; cursor: pointer; cursor: hand; }
+    ._btn_2._right {float: right;}
+    ._btn_write { display: inline-block; float: right; width: 100px; height: 100px; font-size: 17px; line-height: 100px; background-color: #eee; color: #000; text-align: center; cursor: pointer; cursor: hand; }
+    body { margin: 0; padding: 0; background-color: gainsboro; }
+    #_root { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    #_login_form { position: absolute; width: 310px; height: 200px; top: calc(50% - 100px); left: calc(50% - 155px); }
+    #_login_form input { width: 310px; height: 40px; border: 1px solid #000; font-size: 20px; padding: 5px; margin-top: 10px; }
+    #_top { height: 60px; background-color: dimgrey; padding: 0px 15px; }
+    #_chat { height: calc(100% - 200px); overflow-y: auto; }
+    #_file { height: 40px; background-color: dimgrey; padding: 0px 15px; }
+    #_bottom { width: 100%; height: 100px; background-color: #fff; }
+    #_bottom textarea { width: calc(100% - 100px); height: 100px; border: 0; vertical-align: middle; padding: 5px; font-size: 15px; }
+    #_user_list { position: absolute; top: 60px; left: -1000px; width: 500px; max-width: 100%; height: calc(100% - 200px); background-color: #fff; z-index: 100; transition: all 0.5s ease-out; }
+    #_top:hover~#_user_list {left: 0px;}
+    #_login_before {/*            display: none;*/}
+    #_login_after {/*            display: none;*/}
+    </style>
+</head>
+
+<body>
+    <div id="_root">
+        <span id="_login_before">
+            <div id="_login_form">
+                <input type="text" placeholder="email">
+                <input type="password" placeholder="pw">
+                <div class="_btn">Login</div>
+                <div class="_btn _right">Join</div>
+                <div class="_btn _wide">Google Login</div>
+            </div>
+        </span>
+        <span id="_login_after">
+            <div id="_top">
+                <div class="_btn">User List</div>
+                <div class="_btn _right">Logout</div>
+            </div>
+            <div id="_chat"></div>
+            <div id="_file">
+                <div class="_btn_2">multiline : ctrl + enter</div>
+                <div class="_btn_2 _right"><i class="fa fa-files-o"></i> Upload Files</div>
+            </div>
+            <div id="_bottom">
+                <textarea></textarea>
+                <div class="_btn_write">Write</div>
+            </div>
+            <div id="_user_list"></div>
+        </span>
+    </div>
+</body>
+
+</html>

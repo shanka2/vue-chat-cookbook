@@ -1,0 +1,99 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    height: 50px;
+    width: 100%;
+    background-color: dimgray;
+    color: #fff;
+    padding: 0px 30px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 50px;
+    word-spacing: 10px;
+    letter-spacing: 5px;
+}
+
+header i {
+    font-size: 30px !important;
+    color: #fff;
+    float: left;
+    margin-top: 10px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+/*
+header:hover ~ #__middle #__side_menu {
+    margin-left: -350px;
+}
+
+header:hover ~ #__middle #__content {
+    width: 100%;
+}
+*/
+
+#__middle {
+    position: fixed;
+    top: 50px;
+    width: 100%;
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    transition: all 0.2s ease-in;
+}
+
+#__side_menu {
+    display: inline-block;
+    float: left;
+    width: 350px;
+    height: 100%;
+    background-color: #eee;
+    border-right: 1px solid #ccc;
+    transition: inherit;
+    padding: 30px;
+    
+    margin-left: -350px;
+}
+
+#__content {
+    display: inline-block;
+    float: left;
+    height: 100%;
+/*    width: calc(100% - 350px);*/
+    width: 100%;
+    transition: inherit;
+    padding: 30px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    height: 30px;
+    width: 100%;
+    border-top: 1px solid #ccc;
+}
+
+._btn {
+    display: inline-block;
+    width: 150px;
+    height: 40px;
+    font-size: 17px;
+    line-height: 40px;
+    margin-top: 10px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    cursor: hand;
+}

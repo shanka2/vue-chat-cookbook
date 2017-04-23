@@ -1,0 +1,98 @@
+<h1 id="프로그램-작성을-도와줄-코드들">프로그램 작성을 도와줄 코드들</h1>
+
+<p>프로그램을 작성하다 보면 몇몇 우리의 삶을 편안하게 도와줄 것들이 필요합니다. (작은 code snippet 이던, library 던 뭐던 간에..)</p>
+
+<p>모든것을 우리가 다 만들 필요는 없겠죠… 여기서도 마찬가지 입니다. 몇몇 편리한 것들은 그냥 가져다 쓰겠습니다.</p>
+
+<p>물론 다 javascript 로 되어있습니다. (걱정하지 마세요. 여러분이 다 구현할 수 있는 것들입니다… 단지 귀찮을 따름이지요…)</p>
+
+<p>여기서는 vue.js 와 firebase 를 이용한 간단한 채팅 페이지 구현 에만 촛점을 맞추겠습니다.</p>
+
+<h3 id="bytestosizebytes">bytesToSize(bytes)</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    if (i == 0) return bytes + ' ' + sizes[i];
+    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+}
+</code></pre>
+</div>
+<blockquote>
+  <p>bytes를 사람이 읽기 편한 단위 형태로 변한해 주는 코드 입니다.</p>
+
+  <p>우리는 파일 업로드를 다룰것이고, firebase 에선 업로드된 파일의 사이즈 메타정보를 bytes로만 줘서, 위 함수를 이용해 변환해 사용할 계획입니다.</p>
+</blockquote>
+
+<h3 id="setscrolltobottomid">setScrollToBottom(id)</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>function setScrollToBottom(id) {
+    var target = document.getElementById(id);
+    target.scrollTop = target.scrollHeight - target.offsetHeight;
+}
+</code></pre>
+</div>
+<blockquote>
+  <p>돔(dom) 엘리먼트(우리가 만들 프로그램에서는 div) id를 전달받아, 해당 엘리먼트의 화면 스크롤 상태를 바닥으로 가도록 만들어 주는 코드 입니다.</p>
+
+  <p>채팅창의 내용이 길어지면 가장최신 내용을 보여줄수 있도록 해야 하기에 필요합니다.</p>
+</blockquote>
+
+<h3 id="isscrollbottomid">isScrollBottom(id)</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>function isScrollBottom(id) {
+    var target = document.getElementById(id);
+    return target.scrollTop - target.scrollHeight + target.offsetHeight == 0
+}
+</code></pre>
+</div>
+<blockquote>
+  <p>돔(dom) 엘리먼트(우리가 만들 프로그램에서는 div) id를 전달받아, 해당 엘리먼트의 화면 스크롤 상태가 바닥상태인지를 boolean 값으로 전달해주는 코드.</p>
+
+  <p>사실 채팅에서 글이 입력되면 새로 입력된 글이 보이도록 강제로 화면 스크롤 상태를 바닥으로 가도록 해야 하겠죠… 하지만 내가 이전에 쓴글을 확인하기 위해서 화면 스크롤을 올린 상태라면 상대방이 글을 썼다한들 강제로 내 화면 스크롤 상태가 바닥으로 움직이면 좀 곤란할것 같습니다.(아마 짜증나겠죠…) 유저를 위한배려를 위해 이 코드가 필요합니다.</p>
+</blockquote>
+
+<h3 id="asynctimes">async.times</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>var createUser = function(id, callback) {
+    callback(id);
+};
+
+async.times(5, function(n, next) {
+    //5번의 비동기 코드블럭 순차적 호출
+    createUser(n, function(x) {
+        console.log(x);
+        //마지막 비동기 블럭에서 next()가 실행된다.
+        next();
+    });
+}, function(err) {
+    //next()호출에 의해서 바로 이 함수블럭이 실행된다. 즉 위의 모든 비동기 코드블럭의 실행후에 실행되어 진다.
+    console.log("end");
+})
+</code></pre>
+</div>
+<blockquote>
+  <p>여기 요즘 아주 유명한 async 라이브러리에서 하나 빌려온 코드가 있습니다. (이해하기 쉽게 약간 바꾸었습니다.)</p>
+
+  <p>요즘 거의 대부분의 javascript framework 이나 library 코드들이 비동기(async) 코드로 되어있습니다. 즉 callback 의 전시장이라 할 수 있죠… 비동기(async)는 코드는 동기(sync)화된 루틴으로 처리해야할 우리의 로직 부분에서 종종 우리를 오류의 함정으로 빠뜨리기도 하죠. 그렇다고 비동기가 잘못된것은 아닙니다. 오히려 그 반대죠… 비동기는 멋지고 우리는 그걸 잘 컨트롤만 할 수 있으면 됩니다. async 라이브러리는 이러한 우리의 바램에 딱맞는 솔루션이라 할 수 있습니다.</p>
+
+  <p>여기선 file uplaod 시 이용해 보게 될 텐데요… 우리는 file uplaod 그것도 multi-file 업로드를 다룰 겁니다. 멋지지 않나요?? 당연히 firebase file upload 부분도 비동기(async)된 부분으로 처리가 될겁니다. single file upload 라면 상관 없겠지만 multi-file uplaod 시 이러한 비동기(async) 처리를 동기(sync) 적 루틴의 처리로 해결해 낼 수 있어야 합니다. 아마 이부분이 이번 프로그램 작성에서 가장 난이도 있는 부분이 될것 같네요… 하지만 뭐 그리 어렵진 않습니다… 하나하나 해결하면 되지요!</p>
+</blockquote>
+
+<h3 id="momentjs">moment.js</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>moment().format('LTS');  // 1:15:26 AM
+moment().format('ll');   // Apr 23, 2017
+</code></pre>
+</div>
+<blockquote>
+  <p>이건 어디까지나 제생각 이지만… javascript의 Date 오브젝트는 정말 사용하기 불편하다고 생각됩니다. 매번 “왜 now() (실재론 없지만…) 같은 좀 간단한 건 없는거야?” 하는 생각을 하게 만듭니다.(물론 date() 해서 가져온 정보를 잘라서 써도 되겠지만 이용할때 참 뭐…한 기분 들게하죠) 아마 웹개발자 대부분이 자기만의 날짜와 시간을 다루는 라이브러리를 가지고 있을것이라 봅니다.</p>
+
+  <p>아무튼 여기에 날짜와 시간의 끝판왕이 있어서 좀 소개해 봅니다. 도큐먼트도 쉽고 해서 유용하게 이용하실 수 있을겁니다. 여기서는 그저 빙산의 일부분을 사용해 봅니다.</p>
+</blockquote>
+
+<h3 id="icon">icon</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"&gt;
+&lt;i class="fa fa-files-o"&gt;&lt;/i&gt;
+&lt;i class="fa fa-file-o"&gt;&lt;/i&gt;
+</code></pre>
+</div>
+<blockquote>
+  <p><i class="fa fa-files-o"></i> <i class="fa fa-file-o"></i> 이런 타입의 icon 을 제공해 주는 css library 가 있어서 cdn 으로 이용해 보았습니다.</p>
+</blockquote>
