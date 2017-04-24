@@ -72,6 +72,7 @@ header:hover ~ #__middle #__content {
 /*    width: calc(100% - 350px);*/
     width: 100%;
     transition: inherit;
+    padding: 30px;
 }
 
 footer {
