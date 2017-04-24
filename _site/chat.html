@@ -139,35 +139,84 @@
             background-color: #fff;
             z-index: 100;
             transition: all 0.5s ease-out;
+            padding: 30px;
+        }
+
+        #_user_list._show {
+            left: 0;
         }
         
-        #_login_before {
-            /*            display: none;*/
+        #_user_list div {
+            margin-bottom: 20px;
         }
         
-        #_login_after {
-            /*            display: none;*/
+        #_user_list div span {
+            margin-right: 15px;
         }
+        
+        #_chat > div {
+            clear: both;
+        }
+
+        #_chat > div > div {
+            float: left;
+        }
+
+        #_chat > div._right > div {
+            float: right;
+        }
+
+        #_chat > div._right ._msg {
+            background-color: antiquewhite;
+        }
+
+        #_chat > div._right ._meta {
+            text-align: right;
+        }
+
+        #_chat ._msg {
+            background-color: #fff;
+            margin: 10px;
+            padding: 15px;
+            max-width: 60%;
+        }
+
+        #_chat ._msg pre {
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+
+        #_chat ._meta {
+            margin-top: 20px;
+            font-size: 9px;
+            color: #777;
+        }
+
     </style>
 </head>
 
 <body>
     <div id="_root">
-        <span id="_login_before">
+        <template v-if="!uid">
             <div id="_login_form">
-                <input type="text" placeholder="email">
-                <input type="password" placeholder="pw">
-                <div class="_btn">Login</div>
-                <div class="_btn _right">Join</div>
-                <div class="_btn _wide">Google Login</div>
+                <input type="text" placeholder="email" v-model="email">
+                <input type="password" placeholder="pw" v-model="pw">
+                <div class="_btn" @click="_login">Login</div>
+                <div class="_btn _right" @click="_join">Join</div>
+                <div class="_btn _wide" @click="_google_login">Google Login</div>
             </div>
-        </span>
-        <span id="_login_after">
+        </template>
+        <template v-if="uid">
             <div id="_top">
-                <div class="_btn">User List</div>
-                <div class="_btn _right">Logout</div>
+                <div class="_btn" @click="user_show = !user_show">User List</div>
+                <div class="_btn _right" @click="_logout">Logout</div>
             </div>
-            <div id="_chat"></div>
+            <div id="_chat">
+                <div v-for="(v,k) in chat" :class="{_right: (v.email == email)}">
+                    <div class="_msg"><pre>{{v.msg}}</pre></div>
+                    <div class="_meta">{{v.datetime}}<br>{{v.email}}</div>
+                </div>
+            </div>
             <div id="_file">
                 <div class="_btn_2">multiline : ctrl + enter</div>
                 <div class="_btn_2 _right"><i class="fa fa-files-o"></i> Upload Files</div>
@@ -176,9 +225,105 @@
                 <textarea></textarea>
                 <div class="_btn_write">Write</div>
             </div>
-            <div id="_user_list"></div>
-        </span>
+            <div id="_user_list" :class="{_show: user_show}">
+                <div v-for="(v,k) in user"><span>{{v.email}}</span><span>{{v.date}} {{v.time}}</span></div>
+            </div>
+        </template>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyACK2PLifere_Pln2Csxci5Cqi3Z0fRa9M",
+            authDomain: "startvue.firebaseapp.com",
+            databaseURL: "https://startvue.firebaseio.com",
+            projectId: "startvue",
+            storageBucket: "startvue.appspot.com",
+            messagingSenderId: "82732329112"
+        };
+        firebase.initializeApp(config);
+
+    </script>
+    <script src="js/data_chat.js"></script>
+    <script src="https://unpkg.com/vue@2.2.6"></script>
+    <script>
+        user_ref = firebase.database().ref("user");
+        
+        var vue = new Vue({
+            el: "#_root",
+            data: {
+                user: {},
+                chat: data_chat,
+                uid: "",
+                email: "",
+                pw: "",
+                user_show: false
+            },
+            created() {
+                var z = this;
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        // User is signed in.
+                        z.uid = user.uid;
+                        z.email = user.email;
+                        
+                        user_ref.once("value", d => {
+                            var u = d.val() ? d.val() : {};
+                            
+                            if(u[user.uid]) {
+                                user_ref.child(user.uid).update({
+                                    date: "date",
+                                    time: "time"
+                                })
+                            } else {
+                                user_ref.child(user.uid).set({
+                                    email: user.email,
+                                    date: "date",
+                                    time: "time"
+                                })
+                            }
+                        })
+                        
+                        user_ref.on("child_added", d => {
+                            Vue.set(z.user, d.key, d.val());   
+                        })
+                        
+                        user_ref.on("child_changed", d => {
+                            Vue.set(z.user, d.key, d.val());   
+                        })
+                    } else {
+                        // No user is signed in.
+                        z.uid = "";
+                    }
+                });
+            },
+            methods: {
+                _login() {
+                    if (!this.email || !this.pw) return;
+                    firebase.auth().signInWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _join() {
+                    if (!this.email || !this.pw) return;
+                    firebase.auth().createUserWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _google_login() {
+                    var provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider).catch(function(error) {
+                        alert(error);
+                    });
+                },
+                _logout() {
+                    firebase.auth().signOut();
+                },
+            }
+        })
+
+    </script>
 </body>
 
 </html>

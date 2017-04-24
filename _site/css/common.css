@@ -96,3 +96,8 @@ footer {
     cursor: pointer;
     cursor: hand;
 }
+
+._jsbin_link {
+    text-align: right;
+}
+
