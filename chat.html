@@ -141,7 +141,7 @@
             transition: all 0.5s ease-out;
             padding: 30px;
         }
-
+        
         #_user_list._show {
             left: 0;
         }
@@ -157,35 +157,35 @@
         #_chat > div {
             clear: both;
         }
-
+        
         #_chat > div > div {
             float: left;
         }
-
+        
         #_chat > div._right > div {
             float: right;
         }
-
+        
         #_chat > div._right ._msg {
             background-color: antiquewhite;
         }
-
+        
         #_chat > div._right ._meta {
             text-align: right;
         }
-
+        
         #_chat ._msg {
             background-color: #fff;
             margin: 10px;
             padding: 15px;
             max-width: 60%;
         }
-
+        
         #_chat ._msg pre {
             word-break: break-all;
             white-space: pre-wrap;
         }
-
+        
         #_chat ._meta {
             margin-top: 20px;
             font-size: 9px;
@@ -214,16 +214,18 @@
             <div id="_chat">
                 <div v-for="(v,k) in chat" :class="{_right: (v.email == email)}">
                     <div class="_msg"><pre>{{v.msg}}</pre></div>
-                    <div class="_meta">{{v.datetime}}<br>{{v.email}}</div>
+                    <div class="_meta">{{v.date}}
+                        <br>{{v.email}}</div>
                 </div>
             </div>
             <div id="_file">
                 <div class="_btn_2">multiline : ctrl + enter</div>
-                <div class="_btn_2 _right"><i class="fa fa-files-o"></i> Upload Files</div>
+                <div class="_btn_2 _right" @click="document.getElementById('_f').click()"><i class="fa fa-files-o"></i> Upload Files</div>
+                <input id="_f" type="file" multiple @change="_upload">
             </div>
             <div id="_bottom">
-                <textarea></textarea>
-                <div class="_btn_write">Write</div>
+                <textarea v-model="msg" @keypress.enter.prevent="_chat" @keypress.ctrl.enter.prevent="_new_line"></textarea>
+                <div class="_btn_write" @click="_chat">Write</div>
             </div>
             <div id="_user_list" :class="{_show: user_show}">
                 <div v-for="(v,k) in user"><span>{{v.email}}</span><span>{{v.date}}</span></div>
@@ -248,16 +250,24 @@
     <script src="js/data_chat.js"></script>
     <script src="https://unpkg.com/vue@2.2.6"></script>
     <script>
-        user_ref = firebase.database().ref("user");
+        function setScrollToBottom(id) {
+            var target = document.getElementById(id);
+            target.scrollTop = target.scrollHeight - target.offsetHeight;
+        }
         
+        user_ref = firebase.database().ref("user");
+        chat_ref = firebase.database().ref("chat");
+        file_ref = firebase.storage().ref("chat");
+
         var vue = new Vue({
             el: "#_root",
             data: {
                 user: {},
-                chat: data_chat,
+                chat: {},
                 uid: "",
                 email: "",
                 pw: "",
+                msg: "",
                 user_show: false
             },
             created() {
@@ -266,10 +276,9 @@
                     if (user) {
                         // User is signed in.
                         z.uid = user.uid;
-                        z.email = user.email;
-                        
+
                         user_ref.once("value", d => {
-                            if((d.val() | {})[user.uid]) {
+                            if ((d.val() | {})[user.uid]) {
                                 user_ref.child(user.uid).update({
                                     date: Date()
                                 })
@@ -281,13 +290,20 @@
                                 })
                             }
                         })
-                        
+
                         user_ref.on("child_added", d => {
-                            Vue.set(z.user, d.key, d.val());   
+                            Vue.set(z.user, d.key, d.val());
                         })
-                        
+
                         user_ref.on("child_changed", d => {
-                            Vue.set(z.user, d.key, d.val());   
+                            Vue.set(z.user, d.key, d.val());
+                        })
+
+                        chat_ref.on("child_added", d => {
+                            Vue.set(z.chat, d.key, d.val());
+                            Vue.nextTick(() => {
+                                setScrollToBottom('_chat');
+                            })
                         })
                     } else {
                         // No user is signed in.
@@ -297,26 +313,42 @@
             },
             methods: {
                 _login() {
-                    if (!this.email || !this.pw) return;
-                    firebase.auth().signInWithEmailAndPassword(this.email, this.pw).catch(function(error) {
-                        alert(error);
-                    });
-                },
-                _join() {
-                    if (!this.email || !this.pw) return;
-                    firebase.auth().createUserWithEmailAndPassword(this.email, this.pw).catch(function(error) {
-                        alert(error);
-                    });
-                },
-                _google_login() {
-                    var provider = new firebase.auth.GoogleAuthProvider();
-                    firebase.auth().signInWithPopup(provider).catch(function(error) {
-                        alert(error);
-                    });
-                },
-                _logout() {
-                    firebase.auth().signOut();
-                },
+                        if (!this.email || !this.pw) return;
+                        firebase.auth().signInWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                            alert(error);
+                        });
+                    },
+                    _join() {
+                        if (!this.email || !this.pw) return;
+                        firebase.auth().createUserWithEmailAndPassword(this.email, this.pw).catch(function(error) {
+                            alert(error);
+                        });
+                    },
+                    _google_login() {
+                        var provider = new firebase.auth.GoogleAuthProvider();
+                        firebase.auth().signInWithPopup(provider).catch(function(error) {
+                            alert(error);
+                        });
+                    },
+                    _logout() {
+                        firebase.auth().signOut();
+                    },
+                    _chat() {
+                        if (!this.msg || event.ctrlKey) return;
+                        chat_ref.push().set({
+                            uid: this.uid,
+                            email: this.user[this.uid].email,
+                            msg: this.msg,
+                            date: Date()
+                        });
+                        this.msg = "";
+                    },
+                    _new_line() {
+                        this.msg += '\n';
+                    },
+                    _upload() {
+                        alert(event.target);
+                    },
             }
         })
 
