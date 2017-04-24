@@ -226,7 +226,7 @@
                 <div class="_btn_write">Write</div>
             </div>
             <div id="_user_list" :class="{_show: user_show}">
-                <div v-for="(v,k) in user"><span>{{v.email}}</span><span>{{v.date}} {{v.time}}</span></div>
+                <div v-for="(v,k) in user"><span>{{v.email}}</span><span>{{v.date}}</span></div>
             </div>
         </template>
     </div>
@@ -269,18 +269,15 @@
                         z.email = user.email;
                         
                         user_ref.once("value", d => {
-                            var u = d.val() ? d.val() : {};
-                            
-                            if(u[user.uid]) {
+                            if((d.val() | {})[user.uid]) {
                                 user_ref.child(user.uid).update({
-                                    date: "date",
-                                    time: "time"
+                                    date: Date()
                                 })
                             } else {
+                                console.log("no user");
                                 user_ref.child(user.uid).set({
                                     email: user.email,
-                                    date: "date",
-                                    time: "time"
+                                    date: Date()
                                 })
                             }
                         })
