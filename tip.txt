@@ -1,0 +1,1 @@
+git config --global alias.mm !git add . && git commit -a -m "`date`" && git push -u origin master
