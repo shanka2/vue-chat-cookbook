@@ -9,13 +9,13 @@
 <p>여기서는 vue.js 와 firebase 를 이용한 간단한 채팅 페이지 구현 에만 촛점을 맞추겠습니다.</p>
 
 <h3 id="bytestosizebytes">bytesToSize(bytes)</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>function bytesToSize(bytes) {
-    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes == 0) return 'n/a';
-    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    if (i == 0) return bytes + ' ' + sizes[i];
-    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
-}
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">bytesToSize</span><span class="p">(</span><span class="nx">bytes</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Bytes'</span><span class="p">,</span> <span class="s1">'KB'</span><span class="p">,</span> <span class="s1">'MB'</span><span class="p">,</span> <span class="s1">'GB'</span><span class="p">,</span> <span class="s1">'TB'</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">bytes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="s1">'n/a'</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">bytes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">1024</span><span class="p">)));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="nx">bytes</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">sizes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">bytes</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="nx">i</span><span class="p">)).</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">sizes</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="p">}</span>
 </code></pre>
 </div>
 <blockquote>
@@ -25,10 +25,10 @@
 </blockquote>
 
 <h3 id="setscrolltobottomid">setScrollToBottom(id)</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>function setScrollToBottom(id) {
-    var target = document.getElementById(id);
-    target.scrollTop = target.scrollHeight - target.offsetHeight;
-}
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setScrollToBottom</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+    <span class="nx">target</span><span class="p">.</span><span class="nx">scrollTop</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">scrollHeight</span> <span class="o">-</span> <span class="nx">target</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre>
 </div>
 <blockquote>
@@ -38,10 +38,10 @@
 </blockquote>
 
 <h3 id="isscrollbottomid">isScrollBottom(id)</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>function isScrollBottom(id) {
-    var target = document.getElementById(id);
-    return target.scrollTop - target.scrollHeight + target.offsetHeight == 0
-}
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">isScrollBottom</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">target</span><span class="p">.</span><span class="nx">scrollTop</span> <span class="o">-</span> <span class="nx">target</span><span class="p">.</span><span class="nx">scrollHeight</span> <span class="o">+</span> <span class="nx">target</span><span class="p">.</span><span class="nx">offsetHeight</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="p">}</span>
 </code></pre>
 </div>
 <blockquote>
@@ -51,21 +51,21 @@
 </blockquote>
 
 <h3 id="asynctimes">async.times</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>var createUser = function(id, callback) {
-    callback(id);
-};
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">createUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">callback</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+<span class="p">};</span>
 
-async.times(5, function(n, next) {
-    //5번의 비동기 코드블럭 순차적 호출
-    createUser(n, function(x) {
-        console.log(x);
-        //마지막 비동기 블럭에서 next()가 실행된다.
-        next();
-    });
-}, function(err) {
-    //next()호출에 의해서 바로 이 함수블럭이 실행된다. 즉 위의 모든 비동기 코드블럭의 실행후에 실행되어 진다.
-    console.log("end");
-})
+<span class="nx">async</span><span class="p">.</span><span class="nx">times</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//5번의 비동기 코드블럭 순차적 호출</span>
+    <span class="nx">createUser</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+        <span class="c1">//마지막 비동기 블럭에서 next()가 실행된다.</span>
+        <span class="nx">next</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//next()호출에 의해서 바로 이 함수블럭이 실행된다. 즉 위의 모든 비동기 코드블럭의 실행후에 실행되어 진다.</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"end"</span><span class="p">);</span>
+<span class="p">})</span>
 </code></pre>
 </div>
 <blockquote>
@@ -77,8 +77,8 @@ async.times(5, function(n, next) {
 </blockquote>
 
 <h3 id="momentjs">moment.js</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>moment().format('LTS');  // 1:15:26 AM
-moment().format('ll');   // Apr 23, 2017
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">moment</span><span class="p">().</span><span class="nx">format</span><span class="p">(</span><span class="s1">'LTS'</span><span class="p">);</span>  <span class="c1">// 1:15:26 AM</span>
+<span class="nx">moment</span><span class="p">().</span><span class="nx">format</span><span class="p">(</span><span class="s1">'ll'</span><span class="p">);</span>   <span class="c1">// Apr 23, 2017</span>
 </code></pre>
 </div>
 <blockquote>
@@ -88,10 +88,10 @@ moment().format('ll');   // Apr 23, 2017
 </blockquote>
 
 <h3 id="icon">icon</h3>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"&gt;
-&lt;i class="fa fa-files-o"&gt;&lt;/i&gt;
-&lt;i class="fa fa-file-o"&gt;&lt;/i&gt;
-</code></pre>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">link</span> <span class="nx">rel</span><span class="o">=</span><span class="s2">"stylesheet"</span> <span class="nx">href</span><span class="o">=</span><span class="s2">"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">i</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"fa fa-files-o"</span><span class="o">&gt;&lt;</span><span class="sr">/i</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">i</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"fa fa-file-o"</span><span class="o">&gt;&lt;</span><span class="sr">/i</span><span class="err">&gt;
+</span></code></pre>
 </div>
 <blockquote>
   <p><i class="fa fa-files-o"></i> <i class="fa fa-file-o"></i> 이런 타입의 icon 을 제공해 주는 css library 가 있어서 cdn 으로 이용해 보았습니다.</p>
